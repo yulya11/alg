@@ -7,6 +7,7 @@ class Dinic:
         self.level = [0] * self.N
 
     def bfs(self, s, t):
+        # BFS для поиска уровней вершин в графе
         self.level = [-1] * self.N
         self.level[s] = 0
         queue = deque([s])
@@ -16,16 +17,19 @@ class Dinic:
                 if self.level[v] < 0 and flow < cap:
                     self.level[v] = self.level[u] + 1
                     queue.append(v)
+        # Возвращаем True, если достигли стока (t) уровнем, иначе False
         return self.level[t] >= 0
 
     def dfs(self, u, t, f):
+        # DFS для поиска блокирующего потока в блокирующем потоке
         if u == t:
             return f
         for i in range(len(self.graph[u])):
-            v, cap, flow = self.graph[u][i]
+            v, cap, flow in self.graph[u]
             if self.level[v] == self.level[u] + 1 and flow < cap:
                 df = self.dfs(v, t, min(f, cap - flow))
                 if df > 0:
+                    # Обновляем значения пропускной способности и потока
                     self.graph[u][i] = (v, cap, flow + df)
                     for j in range(len(self.graph[v])):
                         k, rev_cap, rev_flow = self.graph[v][j]
@@ -37,6 +41,7 @@ class Dinic:
 
     def max_flow(self, source, sink):
         max_flow = 0
+        # Повторяем BFS/DFS, пока существует блокирующий поток
         while self.bfs(source, sink):
             while True:
                 df = self.dfs(source, sink, float('inf'))
@@ -44,6 +49,7 @@ class Dinic:
                     max_flow += df
                 else:
                     break
+        # Возвращаем максимальный поток в сети
         return max_flow
 
 # Пример использования
